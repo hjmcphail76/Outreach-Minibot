@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotConstants.DriverConstants;
@@ -13,11 +14,12 @@ import frc.robot.subsystems.DriveSubsystem.DriveSubsystem;
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends Command {
   private DriveSubsystem driveSubsystem;
-  private CommandXboxController driverController;
+  Joystick driverController;
   private double xConstrained, rotConstrained;
 
-  public TeleopDrive(DriveSubsystem driveSubsystem, CommandXboxController driverController) {
+  public TeleopDrive(DriveSubsystem driveSubsystem, Joystick driverController) {
     this.driveSubsystem = driveSubsystem;
+    this.driverController = driverController;
     addRequirements(driveSubsystem);
   }
 
@@ -29,12 +31,12 @@ public class TeleopDrive extends Command {
 
   @Override
   public void execute() {
-    xConstrained = MathUtil.applyDeadband(driverController.getLeftY(), DriverConstants.CONTROLLER_DEADZONE);
-    rotConstrained = MathUtil.applyDeadband(driverController.getRightX(), DriverConstants.CONTROLLER_DEADZONE);
+    xConstrained = MathUtil.applyDeadband(driverController.getRawAxis(1), DriverConstants.CONTROLLER_DEADZONE);
+    rotConstrained = MathUtil.applyDeadband(driverController.getRawAxis(4), DriverConstants.CONTROLLER_DEADZONE);
 
 
     driveSubsystem.drive(()->xConstrained, ()->rotConstrained);
-  
+
   }
   
   @Override
